@@ -81,7 +81,7 @@ object Logs {
 
 	@JvmStatic
 	fun vm(vararg contents: Any?) {
-		Logs.println(VERBOSE, null, Array(contents.size, { i -> contents[i].toString() }))
+		Logs.println(VERBOSE, null, Array(contents.size) { i -> contents[i].toString() })
 	}
 
 	@JvmStatic
@@ -115,7 +115,7 @@ object Logs {
 
 	@JvmStatic
 	fun dm(vararg contents: Any?) {
-		Logs.println(DEBUG, null, Array(contents.size, { i -> contents[i].toString() }))
+		Logs.println(DEBUG, null, Array(contents.size) { i -> contents[i].toString() })
 	}
 
 	@JvmStatic
@@ -149,7 +149,7 @@ object Logs {
 
 	@JvmStatic
 	fun im(vararg contents: Any?) {
-		Logs.println(INFO, null, Array(contents.size, { i -> contents[i].toString() }))
+		Logs.println(INFO, null, Array(contents.size) { i -> contents[i].toString() })
 	}
 
 	@JvmStatic
@@ -194,7 +194,7 @@ object Logs {
 
 	@JvmStatic
 	fun wm(vararg contents: Any?) {
-		Logs.println(WARN, null, Array(contents.size, { i -> contents[i].toString() }))
+		Logs.println(WARN, null, Array(contents.size) { i -> contents[i].toString() })
 	}
 
 	@JvmStatic
@@ -233,7 +233,7 @@ object Logs {
 
 	@JvmStatic
 	fun em(vararg contents: Any?) {
-		Logs.println(ERROR, null, Array(contents.size, { i -> contents[i].toString() }))
+		Logs.println(ERROR, null, Array(contents.size) { i -> contents[i].toString() })
 	}
 
 	@JvmStatic
@@ -259,13 +259,12 @@ object Logs {
 
 	@JvmStatic
 	fun wtfm(vararg contents: Any?) {
-		Logs.println(WTF, null, Array(contents.size, { i -> contents[i].toString() }))
+		Logs.println(WTF, null, Array(contents.size) { i -> contents[i].toString() })
 	}
 
-	@JvmStatic
 	private fun println(priority: Int, tag: String?, msg: Array<String>) {
 		val date = Calendar.getInstance().time
-		val stackTraceElement = Throwable().stackTrace[config.stackOffset]
+		val stackTraceElement = parseStackTraceElement(config.stackOffset)
 		val tagString = tag
 				?: stackTraceElement.fileName.substring(0, stackTraceElement.fileName.lastIndexOf('.'))
 		val stringBuffer = if (config.isShowBorder) StringBuffer(" ").appendln() else StringBuffer(" ")
@@ -290,7 +289,19 @@ object Logs {
 			Log.println(priority, tagString, stringBuffer.toString())
 	}
 
-	@JvmStatic
+	private fun parseStackTraceElement(stackOffset: Int): StackTraceElement {
+		val stackTraceArray = Throwable().stackTrace
+		if (stackOffset != -1)
+			return stackTraceArray[stackOffset]
+		else {
+			stackTraceArray.forEach {
+				if (!it.className.contains(javaClass.name))
+					return it
+			}
+		}
+		return stackTraceArray[0]
+	}
+
 	private fun printBorder(isTop: Boolean): String {
 		return if (isTop)
 			"$TOP_CORNER$BORDER$BORDER"
@@ -298,7 +309,6 @@ object Logs {
 			"$BOTTOM_CORNER$BORDER$BORDER"
 	}
 
-	@JvmStatic
 	private fun printHead(date: Date, stackTraceElement: StackTraceElement): String {
 		val dateString = DATE_FORMAT.format(date)
 		val headString = "${stackTraceElement.className}.${stackTraceElement.methodName}(${stackTraceElement.fileName}:${stackTraceElement.lineNumber})"
@@ -309,23 +319,20 @@ object Logs {
 		return stringBuffer.toString()
 	}
 
-	@JvmStatic
 	private fun printDivider(): String {
 		return "$MIDDLE_CORNER$DIVIDER$DIVIDER"
 	}
 
-	@JvmStatic
 	private fun printMsg(msg: Array<String>): String {
-		if (msg.size == 1)
-			return "$LEFT_BORDER ${msg[0]}\n"
+		return if (msg.size == 1)
+			"$LEFT_BORDER ${msg[0]}\n"
 		else {
 			val stringBuffer = StringBuffer()
 			msg.forEachIndexed { index, s -> stringBuffer.append("$LEFT_BORDER ${formatIndex(index)} $LEFT_BORDER $s").appendln() }
-			return stringBuffer.toString()
+			stringBuffer.toString()
 		}
 	}
 
-	@JvmStatic
 	private fun formatIndex(index: Int): String {
 		val stringBuilder = StringBuilder()
 		var num = 1

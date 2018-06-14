@@ -14,6 +14,6 @@ class MainActivity : AppCompatActivity() {
 
 		LogUtils.i("onCreate: ","test2","test3","test4","test1", "test2", "test3", "test4", "test2", "test3", "test4", "test2", "test3", "test4", "test2", "test3", "test4")
 		Logs.im("test1", "test2", "test3", "test4", "test2", "test3", "test4", "test2", "test3", "test4", "test2", "test3", "test4")
-		Logs.i("TAG", "test2")
+		Logs.i("test2")
 	}
 }

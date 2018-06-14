@@ -6,7 +6,7 @@ class LogsConfig {
 	var isShowHead = true//是否显示头部信息
 	var isShowBorder = true//是否显示边框
 	var indexWidth = 4//多条信息输出时，编号所占的宽度
-	var stackOffset = 2//需要输出的栈深度
+	var stackOffset = -1//需要输出的栈深度
 
 	fun setShowLog(isShowLog: Boolean): LogsConfig {
 		this.isShowLog = isShowLog
