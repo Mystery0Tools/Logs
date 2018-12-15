@@ -9,6 +9,7 @@ class LogsConfig {
 	var isShowBorder = true//是否显示边框
 	var isShowThread = true//是否显示当前的所在线程
 	var isShowInfoTag = true//是否显示信息的tag
+	var commonTag = ""//全局的tag
 
 	enum class NumberGravity { NONE, LEFT, RIGHT }
 
@@ -66,6 +67,11 @@ class LogsConfig {
 
 	fun setDividerLength(dividerLength: Int): LogsConfig {
 		this.dividerLength = dividerLength
+		return this
+	}
+
+	fun setCommonTag(commonTag: String): LogsConfig {
+		this.commonTag = commonTag
 		return this
 	}
 }

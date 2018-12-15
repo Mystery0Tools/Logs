@@ -247,8 +247,10 @@ object Logs {
 		val list = ArrayList<ArrayList<String>>()
 		val date = Calendar.getInstance().time
 		val stackTraceElement = parseStackTraceElement(config.stackOffset)
-		val tagString = tag
+		val tagString = if (config.commonTag == "") tag
 				?: stackTraceElement.fileName.substring(0, stackTraceElement.fileName.lastIndexOf('.'))
+		else
+			config.commonTag
 
 		if (config.isShowThread) {
 			val threadTag = StringInterfaceContext.getString(config.language) { if (config.isShowInfoTag) it.getThreadTag() else "" }
@@ -317,7 +319,8 @@ object Logs {
 			val messageList = convertMessageToString(s)
 			if (config.showNumber != LogsConfig.NumberGravity.NONE) {
 				messageList.forEachIndexed { messageIndex, message ->
-					stringBuffer.append("$LEFT_BORDER${formatIndex(index + 1, messageIndex == 0)}$LEFT_BORDER $message").appendln()
+					stringBuffer.append("$LEFT_BORDER${formatIndex(index + 1, messageIndex == 0)}$LEFT_BORDER $message")
+							.appendln()
 				}
 			} else {
 				messageList.forEach { message ->
