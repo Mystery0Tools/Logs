@@ -76,11 +76,13 @@ object Logs {
 	 */
 	@JvmStatic
 	fun v(tag: String?, msg: String?, tr: Throwable?) {
-		if (config.isShowLog) Logs.println(VERBOSE, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
+		if (config.isShowLog) println(VERBOSE, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
 	}
 
 	@JvmStatic
-	fun vm(vararg contents: Any?) = Logs.println(VERBOSE, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	fun vm(vararg contents: Any?) {
+		if (config.isShowLog) println(VERBOSE, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	}
 
 	@JvmStatic
 	fun d(msg: String?) = d(null, msg)
@@ -103,11 +105,13 @@ object Logs {
 	 */
 	@JvmStatic
 	fun d(tag: String?, msg: String?, tr: Throwable?) {
-		if (config.isShowLog) Logs.println(DEBUG, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
+		if (config.isShowLog) println(DEBUG, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
 	}
 
 	@JvmStatic
-	fun dm(vararg contents: Any?) = Logs.println(DEBUG, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	fun dm(vararg contents: Any?) {
+		if (config.isShowLog) println(DEBUG, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	}
 
 	@JvmStatic
 	fun i(msg: String?) = i(null, msg)
@@ -130,11 +134,13 @@ object Logs {
 	 */
 	@JvmStatic
 	fun i(tag: String?, msg: String?, tr: Throwable?) {
-		if (config.isShowLog) Logs.println(INFO, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
+		if (config.isShowLog) println(INFO, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
 	}
 
 	@JvmStatic
-	fun im(vararg contents: Any?) = Logs.println(INFO, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	fun im(vararg contents: Any?) {
+		if (config.isShowLog) println(INFO, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	}
 
 	@JvmStatic
 	fun w(msg: String?) = w(null, msg)
@@ -165,10 +171,10 @@ object Logs {
 	 * @param tr An exception to log
 	 */
 	@JvmStatic
-	fun w(tag: String?, msg: String?, tr: Throwable?) = Logs.println(WARN, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
+	fun w(tag: String?, msg: String?, tr: Throwable?) = println(WARN, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
 
 	@JvmStatic
-	fun wm(vararg contents: Any?) = Logs.println(WARN, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	fun wm(vararg contents: Any?) = println(WARN, null, Array(contents.size) { i -> contents[i].toString() }, null)
 
 	@JvmStatic
 	fun e(msg: String?) = e(null, msg)
@@ -193,10 +199,10 @@ object Logs {
 	 * @param tr An exception to log
 	 */
 	@JvmStatic
-	fun e(tag: String?, msg: String?, tr: Throwable?) = Logs.println(ERROR, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
+	fun e(tag: String?, msg: String?, tr: Throwable?) = println(ERROR, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
 
 	@JvmStatic
-	fun em(vararg contents: Any?) = Logs.println(ERROR, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	fun em(vararg contents: Any?) = println(ERROR, null, Array(contents.size) { i -> contents[i].toString() }, null)
 
 	@JvmStatic
 	fun wtf(msg: String?) = wtf(null, msg)
@@ -208,72 +214,70 @@ object Logs {
 	fun wtf(tag: String?, tr: Throwable?) = wtf(tag, null, tr)
 
 	@JvmStatic
-	fun wtf(tag: String?, msg: String?, tr: Throwable?) = Logs.println(WTF, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
+	fun wtf(tag: String?, msg: String?, tr: Throwable?) = println(WTF, tag, if (msg == null) emptyArray() else arrayOf(msg), tr)
 
 	@JvmStatic
-	fun wtfm(vararg contents: Any?) = Logs.println(WTF, null, Array(contents.size) { i -> contents[i].toString() }, null)
+	fun wtfm(vararg contents: Any?) = println(WTF, null, Array(contents.size) { i -> contents[i].toString() }, null)
 
 	private fun originPrintln(priority: Int, tag: String, msgList: ArrayList<ArrayList<String>>) {
-		val stringBuffer = if (config.isShowBorder) StringBuffer(" ").appendln() else StringBuffer(" ")
-		if (config.isShowBorder) {//显示边框
-			stringBuffer.append(printBorder(true)).appendln()
+		val stringBuilder = StringBuilder()
+		stringBuilder.appendln(" ")
+		if (config.isShowBorder && config.isShowLog) {//显示边框
+			stringBuilder.appendln(printBorder(true))
 			msgList.forEachIndexed { index, arrayList ->
 				if (index != 0)
-					stringBuffer.append(printDivider()).appendln()
-				stringBuffer.append(printMsg(arrayList.toTypedArray()))
+					stringBuilder.appendln(printDivider())
+				stringBuilder.append(printMsg(arrayList.toTypedArray()))
 			}
-			stringBuffer.append(printBorder(false)).appendln()
+			stringBuilder.appendln(printBorder(false))
 		} else {
 			if (msgList.size == 1) {
 				msgList[0].forEach {
-					stringBuffer.append(it).appendln()
+					stringBuilder.appendln(it)
 				}
 			} else {
-				stringBuffer.appendln()
 				msgList.forEach { list ->
 					list.forEach {
-						stringBuffer.append(it).appendln()
+						stringBuilder.appendln(it)
 					}
 				}
 			}
 		}
 		if (priority == WTF)
-			Log.wtf(tag, stringBuffer.toString())
+			Log.wtf(tag, stringBuilder.toString())
 		else
-			Log.println(priority, tag, stringBuffer.toString())
+			Log.println(priority, tag, stringBuilder.toString())
 	}
 
 	private fun println(priority: Int, tag: String?, msg: Array<String>, tr: Throwable?) {
 		val list = ArrayList<ArrayList<String>>()
-		val date = Calendar.getInstance().time
 		val stackTraceElement = parseStackTraceElement(config.stackOffset)
 		val tagString = if (config.commonTag == "") tag
 				?: stackTraceElement.fileName.substring(0, stackTraceElement.fileName.lastIndexOf('.'))
 		else
 			config.commonTag
-
-		if (config.isShowThread) {
-			val threadTag = StringInterfaceContext.getString(config.language) { if (config.isShowInfoTag) it.getThreadTag() else "" }
-			list.add(arrayListOf("$threadTag${Thread.currentThread()}"))
-		}
-
-		if (config.isShowHead) {
-			val dateString = DATE_FORMAT.format(date)
-			val headString = "${stackTraceElement.className}.${stackTraceElement.methodName}(${stackTraceElement.fileName}:${stackTraceElement.lineNumber})"
-			val headStringList = ArrayList<String>()
-			if (config.isShowDate) {
-				val dateTag = StringInterfaceContext.getString(config.language) { if (config.isShowInfoTag) it.getDateTag() else "" }
-				headStringList.add("$dateTag$dateString")
+		if (config.isShowLog) {
+			val date = Calendar.getInstance().time
+			if (config.isShowThread) {
+				val threadTag = StringInterfaceContext.getString(config.language) { if (config.isShowInfoTag) it.getThreadTag() else "" }
+				list.add(arrayListOf("$threadTag${Thread.currentThread()}"))
 			}
-			val stackTag = StringInterfaceContext.getString(config.language) { if (config.isShowInfoTag) it.getStackTag() else "" }
-			headStringList.add("$stackTag$headString")
-			list.add(headStringList)
-		}
 
-		val messageStringList = ArrayList<String>()
-		msg.forEach {
-			messageStringList.add(it)
+			if (config.isShowHead) {
+				val dateString = DATE_FORMAT.format(date)
+				val headString = "${stackTraceElement.className}.${stackTraceElement.methodName}(${stackTraceElement.fileName}:${stackTraceElement.lineNumber})"
+				val headStringList = ArrayList<String>()
+				if (config.isShowDate) {
+					val dateTag = StringInterfaceContext.getString(config.language) { if (config.isShowInfoTag) it.getDateTag() else "" }
+					headStringList.add("$dateTag$dateString")
+				}
+				val stackTag = StringInterfaceContext.getString(config.language) { if (config.isShowInfoTag) it.getStackTag() else "" }
+				headStringList.add("$stackTag$headString")
+				list.add(headStringList)
+			}
 		}
+		val messageStringList = ArrayList<String>()
+		messageStringList.addAll(msg)
 		list.add(messageStringList)
 		if (tr != null) {
 			list.add(arrayListOf(convertExceptionToString(tr)))
@@ -314,21 +318,20 @@ object Logs {
 	}
 
 	private fun printMsg(msg: Array<String>): String {
-		val stringBuffer = StringBuffer()
+		val stringBuilder = StringBuilder()
 		msg.forEachIndexed { index, s ->
 			val messageList = convertMessageToString(s)
 			if (config.showNumber != LogsConfig.NumberGravity.NONE) {
 				messageList.forEachIndexed { messageIndex, message ->
-					stringBuffer.append("$LEFT_BORDER${formatIndex(index + 1, messageIndex == 0)}$LEFT_BORDER $message")
-							.appendln()
+					stringBuilder.appendln("$LEFT_BORDER${formatIndex(index + 1, messageIndex == 0)}$LEFT_BORDER $message")
 				}
 			} else {
 				messageList.forEach { message ->
-					stringBuffer.append("$LEFT_BORDER $message").appendln()
+					stringBuilder.appendln("$LEFT_BORDER $message")
 				}
 			}
 		}
-		return stringBuffer.toString()
+		return stringBuilder.toString()
 	}
 
 	private fun formatIndex(index: Int, isShow: Boolean = true): String {
