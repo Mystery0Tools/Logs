@@ -253,7 +253,7 @@ object Logs {
 		val list = ArrayList<ArrayList<String>>()
 		val stackTraceElement = parseStackTraceElement(config.stackOffset)
 		val tagString = if (config.commonTag == "") tag
-				?: stackTraceElement.fileName.substring(0, stackTraceElement.fileName.lastIndexOf('.'))
+				?: stackTraceElement.fileName
 		else
 			config.commonTag
 		if (config.isShowLog) {
