@@ -35,7 +35,8 @@ task fuck(group: 'publishing') {
     }
     doLast {
         exec {
-            commandLine "../${getGradlewName()}", 'clean', 'build', 'bintrayUpload', '-PdryRun=false'
+//            commandLine "../${getGradlewName()}", 'clean', 'build', 'bintrayUpload', '-PdryRun=false'
+            commandLine "../${getGradlewName()}", 'clean', 'build', '-PdryRun=false'
         }
     }
 }
