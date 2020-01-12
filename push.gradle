@@ -5,12 +5,13 @@ import org.apache.tools.ant.taskdefs.condition.Os
 // bintray
 Properties properties = new Properties()
 boolean isHasFile = false
-if (project.rootProject.file('local.properties') != null && project.rootProject.file('local.properties').exists()) {
+def propertiesFile = new File("local.properties")
+if (propertiesFile != null && propertiesFile.exists()) {
     isHasFile = true
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    properties.load(new FileInputStream(propertiesFile))
 }
-def user = isHasFile ? properties.getProperty("bintray.user") : System.getenv("bintray.user")
-def key = isHasFile ? properties.getProperty("bintray.apikey") : System.getenv("bintray.apikey")
+def user = isHasFile ? properties.getProperty("bintray.user") : System.getenv("BINTRAY_USER")
+def key = isHasFile ? properties.getProperty("bintray.apikey") : System.getenv("BINTRAY_KEY")
 
 publish {
     repoName = POM_REPO_NAME                // 代码仓库名称。 默认设置为“maven”
