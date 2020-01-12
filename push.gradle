@@ -25,6 +25,7 @@ publish {
 
     bintrayUser = user                      // bintray账号名
     bintrayKey = key                        // bintray账号api key
+    dryRun = false
 }
 
 task fuck(group: 'publishing') {
@@ -35,8 +36,7 @@ task fuck(group: 'publishing') {
     }
     doLast {
         exec {
-//            commandLine "../${getGradlewName()}", 'clean', 'build', 'bintrayUpload', '-PdryRun=false'
-            commandLine "../${getGradlewName()}", 'clean', 'build', '-PdryRun=false'
+            commandLine "../${getGradlewName()}", 'clean', 'build', 'bintrayUpload'
         }
     }
 }
