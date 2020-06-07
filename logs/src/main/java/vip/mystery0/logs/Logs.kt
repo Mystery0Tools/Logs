@@ -53,6 +53,9 @@ object Logs {
 	fun setConfig(listener: (LogsConfig) -> Unit) = listener.invoke(config)
 
 	@JvmStatic
+	fun v(tr: Throwable?) = v(null, null, tr)
+
+	@JvmStatic
 	fun v(msg: String?) = v(null, msg)
 
 	@JvmStatic
@@ -85,6 +88,9 @@ object Logs {
 	}
 
 	@JvmStatic
+	fun d(tr: Throwable?) = d(null, null, tr)
+
+	@JvmStatic
 	fun d(msg: String?) = d(null, msg)
 
 	/**
@@ -114,6 +120,9 @@ object Logs {
 	}
 
 	@JvmStatic
+	fun i(tr: Throwable?) = i(null, null, tr)
+
+	@JvmStatic
 	fun i(msg: String?) = i(null, msg)
 
 	/**
@@ -141,6 +150,9 @@ object Logs {
 	fun im(vararg contents: Any?) {
 		if (config.isShowLog) println(INFO, null, Array(contents.size) { i -> contents[i].toString() }, null)
 	}
+
+	@JvmStatic
+	fun w(tr: Throwable?) = w(null, null, tr)
 
 	@JvmStatic
 	fun w(msg: String?) = w(null, msg)
@@ -177,6 +189,9 @@ object Logs {
 	fun wm(vararg contents: Any?) = println(WARN, null, Array(contents.size) { i -> contents[i].toString() }, null)
 
 	@JvmStatic
+	fun e(tr: Throwable?) = e(null, null, tr)
+
+	@JvmStatic
 	fun e(msg: String?) = e(null, msg)
 
 	@JvmStatic
@@ -203,6 +218,9 @@ object Logs {
 
 	@JvmStatic
 	fun em(vararg contents: Any?) = println(ERROR, null, Array(contents.size) { i -> contents[i].toString() }, null)
+
+	@JvmStatic
+	fun wtf(tr: Throwable?) = wtf(null, null, tr)
 
 	@JvmStatic
 	fun wtf(msg: String?) = wtf(null, msg)
